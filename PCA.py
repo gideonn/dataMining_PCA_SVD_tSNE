@@ -2,7 +2,6 @@ import numpy as np
 from numpy.linalg import eig
 import matplotlib.pyplot as plt
 import pandas as pd
-import argparse
 import sys
 
 
@@ -63,12 +62,11 @@ def plotGraph(numRows, finalData, dataset, labels):
     plt.show()
 
 def main():
-    # parser = argparse.ArgumentParser(description='Perform PCA on dataset.')
-    # print(sys.argv)
 
     try:
         filename = sys.argv[1]
     except:
+        print("Usage: python PCA.py pca_a.txt")
         print("No filename given, exiting!")
         exit(-1)
 
