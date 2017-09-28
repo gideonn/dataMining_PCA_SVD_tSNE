@@ -1,52 +1,99 @@
-from numpy import *
-import operator
-from os import listdir
-import matplotlib
+import numpy as np
+from numpy import linalg
 import matplotlib.pyplot as plt
 import pandas as pd
-from numpy.linalg import *
-from scipy.stats.stats import pearsonr
-from numpy import linalg as la
+import sys
+from sklearn.decomposition import TruncatedSVD
 
-fileName = 'pca_c.txt'
-#get total columns
-with open(fileName, 'r') as f:
-    numCols = len(f.readline().split('\t'))
+def loadDataset(fileName):
+    labels = []
+    try:
+        with open(fileName, 'r') as f:
+            data = f.readline().strip().split('\t')
+            numCols = len(data)
+            labels.append(data[numCols - 1])
+            for line in f:
+                # print(line)
+                labels.append(line.strip().split('\t')[numCols-1])
+    except FileNotFoundError:
+        print("File not found, please check the filename in the argument.")
+        exit(-1)
+    except:
+        print("Error opening the file")
+        exit(-1)
 
-# print("Number of columns in file {} is : {}".format(fileName,numCols))
-# load data points
-raw_data = loadtxt(fileName,delimiter='\t',skiprows=0,usecols=range(0,numCols-1))
-samples,features = shape(raw_data)
+    # print("Number of columns in file {} is : {}".format(fileName,numCols))
+    # load data points
+    raw_data = np.loadtxt(fileName, delimiter='\t', skiprows=0, usecols=range(0, numCols - 1))
+    # samples, features = np.shape(raw_data)
+    # data = np.mat(raw_data[:, :4])
+    data = np.mat(raw_data)
 
-print(samples, features)
-
-# normalize and remove mean
-# data = mat(raw_data[:, :4])
+    return data, labels
 
 
-def svd(data, S=2):
+def SVD(data,num_components):
     # calculate SVD
     U, s, V = linalg.svd(data)
-    # Sig = mat(eye(S) * s[:S])
-    # take out columns you don't need
+    # # Sig = np.mat(np.eye(S) * s[:S])
+    # # take out columns you don't need
+    # # print(Sig)
+    newdata = np.dot(U[:, 0:num_components], np.dot(np.diagflat(s[0:num_components]), V[0:num_components, :]))
+    # newdata = U[:, :num_components]
+    # newdata = U[:, :num_components].dot(np.diag(s))
+    # newdata = np.dot(U[:, :num_components], np.dot(np.diag(s[:num_components]), V[:num_components, :]))
+    # print(newdata)
+    # print(np.shape(U[:, :num_components]))
+    # newdata=newdata[:,:2]
+    print(np.shape(newdata))
 
-    print("U: {} \n s: {} \n V: {}".format(U,s,V))
+    # svd = TruncatedSVD(n_components=num_components).transform(data)
+    # svd.fit(data)
+    # newdata = svd.transform(data)
+    # # # print(data)
+    # newdata = svd
+    # print(np.shape(newdata[:,0]))
+    # # print(np.shape(newdata[:,0]))
+    return newdata
 
-    newdata = U[:, :S]
-    print(newdata)
-    # print("NEW DATA IS : \n",newdata)
-    # this line is used to retrieve dataset
-    # ~ new = U[:,:2]*Sig*V[:2,:]
 
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
-    colors = ['blue', 'red', 'black']
+def plotGraph(numRows, finalData, dataset, labels):
+    #TSVD
+    # df = pd.DataFrame(dict(x=finalData[:,0], y=finalData[:,1], label=labels))
 
-    for i in range(samples):
-        # print("Val of i: {}, newData[i,0]: {}".format(i, raw_data[i,1]))
-        ax.scatter(newdata[i, 0], newdata[i, 1], marker='*', color=colors[(int(raw_data[i,-1]))%3])
+    #NP SVD
+    df = pd.DataFrame(dict(x=np.asarray(finalData.T[0])[0], y=np.asarray(finalData.T[1])[0], label=labels))
+
+    groups = df.groupby('label')
+    fig, ax = plt.subplots()
+    ax.margins(0.05)  # Optional, just adds 5% padding to the autoscaling
+
+    for name, group in groups:
+        ax.plot(group.x, group.y, marker='o', linestyle='', ms=5, label=name)
+    ax.legend()
+
     plt.xlabel('SVD1')
     plt.ylabel('SVD2')
+
     plt.show()
 
-svd(raw_data,2)
+def main():
+    try:
+        filename = sys.argv[1]
+    except:
+        print(sys.exc_info()[0])
+        print("Usage: python PCA.py pca_a.txt")
+        print("No filename given, exiting!")
+        exit(-1)
+
+    dataset, labels = loadDataset(filename)
+    numRows, numCols = np.shape(dataset)
+    finalData = SVD(dataset,2)
+
+    # print("FINAL DATA : \n", finalData)
+
+    plotGraph(numRows,finalData,dataset,labels)
+
+
+if __name__ == '__main__':
+    main()
