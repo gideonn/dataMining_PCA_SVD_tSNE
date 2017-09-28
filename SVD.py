@@ -34,24 +34,22 @@ def loadDataset(fileName):
 
 def SVD(data,num_components):
     # calculate SVD
-    U, s, V = linalg.svd(data)
-    # # Sig = np.mat(np.eye(S) * s[:S])
-    # # take out columns you don't need
-    # # print(Sig)
-    newdata = np.dot(U[:, 0:num_components], np.dot(np.diagflat(s[0:num_components]), V[0:num_components, :]))
+    # U, s, V = linalg.svd(data)
+    # newdata = np.dot(U[:, 0:num_components], np.dot(np.diagflat(s[0:num_components]), V[0:num_components, :]))
     # newdata = U[:, :num_components]
     # newdata = U[:, :num_components].dot(np.diag(s))
     # newdata = np.dot(U[:, :num_components], np.dot(np.diag(s[:num_components]), V[:num_components, :]))
     # print(newdata)
     # print(np.shape(U[:, :num_components]))
     # newdata=newdata[:,:2]
-    print(np.shape(newdata))
+    # print(np.shape(newdata))
 
-    # svd = TruncatedSVD(n_components=num_components).transform(data)
+    svd = TruncatedSVD(n_components=num_components).fit_transform(data)
+
     # svd.fit(data)
     # newdata = svd.transform(data)
     # # # print(data)
-    # newdata = svd
+    newdata = svd
     # print(np.shape(newdata[:,0]))
     # # print(np.shape(newdata[:,0]))
     return newdata
@@ -59,10 +57,10 @@ def SVD(data,num_components):
 
 def plotGraph(numRows, finalData, dataset, labels):
     #TSVD
-    # df = pd.DataFrame(dict(x=finalData[:,0], y=finalData[:,1], label=labels))
+    df = pd.DataFrame(dict(x=finalData[:,0], y=finalData[:,1], label=labels))
 
     #NP SVD
-    df = pd.DataFrame(dict(x=np.asarray(finalData.T[0])[0], y=np.asarray(finalData.T[1])[0], label=labels))
+    # df = pd.DataFrame(dict(x=np.asarray(finalData.T[0])[0], y=np.asarray(finalData.T[1])[0], label=labels))
 
     groups = df.groupby('label')
     fig, ax = plt.subplots()
@@ -86,6 +84,7 @@ def main():
         print("No filename given, exiting!")
         exit(-1)
 
+    print("Running SVD for file: {}".format(filename))
     dataset, labels = loadDataset(filename)
     numRows, numCols = np.shape(dataset)
     finalData = SVD(dataset,2)

@@ -46,8 +46,8 @@ def plotGraph(numRows, finalData, dataset, labels):
         ax.plot(group.x, group.y, marker='o', linestyle='', ms=5, label=name)
     ax.legend()
 
-    plt.xlabel('PCA1')
-    plt.ylabel('PCA2')
+    plt.xlabel('tSNE1')
+    plt.ylabel('tSNE2')
 
     plt.show()
 
