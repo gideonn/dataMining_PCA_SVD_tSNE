@@ -36,7 +36,7 @@ def tSNE(data, num_components):
 
     return newdata
 
-def plotGraph(numRows, finalData, dataset, labels):
+def plotGraph(filename, finalData, labels):
     df = pd.DataFrame(dict(x=finalData[:,0], y=finalData[:,1], label=labels))
     groups = df.groupby('label')
     fig, ax = plt.subplots()
@@ -45,7 +45,7 @@ def plotGraph(numRows, finalData, dataset, labels):
     for name, group in groups:
         ax.plot(group.x, group.y, marker='o', linestyle='', ms=5, label=name)
     ax.legend()
-
+    ax.set_title('Input file: ' + filename)
     plt.xlabel('tSNE1')
     plt.ylabel('tSNE2')
 
@@ -63,7 +63,7 @@ def main():
     dataset, labels = loadDataset(filename)
     numRows, numCols = np.shape(dataset)
     finalData = tSNE(dataset,2)
-    plotGraph(numRows,finalData,dataset, labels)
+    plotGraph(filename,finalData, labels)
 
 if __name__ == '__main__':
     main()

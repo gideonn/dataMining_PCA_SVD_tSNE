@@ -55,7 +55,7 @@ def SVD(data,num_components):
     return newdata
 
 
-def plotGraph(numRows, finalData, dataset, labels):
+def plotGraph(filename, finalData, labels):
     #TSVD
     df = pd.DataFrame(dict(x=finalData[:,0], y=finalData[:,1], label=labels))
 
@@ -69,6 +69,7 @@ def plotGraph(numRows, finalData, dataset, labels):
     for name, group in groups:
         ax.plot(group.x, group.y, marker='o', linestyle='', ms=5, label=name)
     ax.legend()
+    ax.set_title('Input file: ' + filename)
 
     plt.xlabel('SVD1')
     plt.ylabel('SVD2')
@@ -91,7 +92,7 @@ def main():
 
     # print("FINAL DATA : \n", finalData)
 
-    plotGraph(numRows,finalData,dataset,labels)
+    plotGraph(filename,finalData,labels)
 
 
 if __name__ == '__main__':

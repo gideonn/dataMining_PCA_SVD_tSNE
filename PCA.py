@@ -31,14 +31,14 @@ def loadDataset(fileName):
 
     return data, labels
 
-def PCA(data,d):
+def PCA(data,num_components):
     means_mat = np.mean(data,axis=0)
     data = data - means_mat
     covMat = np.cov(data.T)
     eigenVals, eigenVectors = eig(covMat)
 
     idx = np.argsort(eigenVals)
-    idx = idx[:-(d+1):-1]
+    idx = idx[:-(num_components+1):-1]
     eigenVectorsSorted = eigenVectors[:,idx]
 
     # print("Shape data : {}, Shape eigenVectors: {}".format(np.shape(data),np.shape(eigenVectorsSorted)))
@@ -46,16 +46,21 @@ def PCA(data,d):
 
     return finalData
 
-def plotGraph(numRows, finalData, dataset, labels):
+def plotGraph(filename, finalData,labels):
+    #create dataframe and group based on labels
     df = pd.DataFrame(dict(x=np.asarray(finalData.T[0])[0], y=np.asarray(finalData.T[1])[0], label=labels))
     groups = df.groupby('label')
-    fig, ax = plt.subplots()
-    ax.margins(0.05)  # Optional, just adds 5% padding to the autoscaling
 
+    #create the subplots
+    fig, ax = plt.subplots()
+    ax.margins(0.05)
+
+    #plot all datapoints
     for name, group in groups:
         ax.plot(group.x, group.y, marker='o', linestyle='', ms=5, label=name)
-    ax.legend()
 
+    ax.legend()
+    ax.set_title('Input file: ' + filename)
     plt.xlabel('PCA1')
     plt.ylabel('PCA2')
 
@@ -66,14 +71,14 @@ def main():
     try:
         filename = sys.argv[1]
     except:
-        print("Usage: python PCA.py pca_a.txt")
+        print("Usage: python PCA.py <inputfile> \n Example: python PCA.py pca_a.txt")
         print("No filename given, exiting!")
         exit(-1)
 
     dataset, labels = loadDataset(filename)
-    numRows, numCols = np.shape(dataset)
+    # numRows, numCols = np.shape(dataset)
     finalData = PCA(dataset,2)
-    plotGraph(numRows,finalData,dataset, labels)
+    plotGraph(filename,finalData,labels)
 
 if __name__ == '__main__':
     main()
