@@ -69,11 +69,12 @@ def plotGraph(filename, finalData, labels):
     for name, group in groups:
         ax.plot(group.x, group.y, marker='o', linestyle='', ms=5, label=name)
     ax.legend()
-    ax.set_title('Input file: ' + filename)
+    ax.set_title('Algorithm: SVD\n Input file: ' + filename)
 
     plt.xlabel('SVD1')
     plt.ylabel('SVD2')
 
+    plt.savefig('SVD_' + filename + ".png")
     plt.show()
 
 def main():

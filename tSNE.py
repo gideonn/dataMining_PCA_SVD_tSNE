@@ -45,9 +45,11 @@ def plotGraph(filename, finalData, labels):
     for name, group in groups:
         ax.plot(group.x, group.y, marker='o', linestyle='', ms=5, label=name)
     ax.legend()
-    ax.set_title('Input file: ' + filename)
+    ax.set_title('Algorithm: tSNE\n Input file: ' + filename)
     plt.xlabel('tSNE1')
     plt.ylabel('tSNE2')
+
+    plt.savefig('tSNE_' + filename + ".png")
 
     plt.show()
 

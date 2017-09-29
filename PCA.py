@@ -60,10 +60,11 @@ def plotGraph(filename, finalData,labels):
         ax.plot(group.x, group.y, marker='o', linestyle='', ms=5, label=name)
 
     ax.legend()
-    ax.set_title('Input file: ' + filename)
+    ax.set_title('Algorithm: PCA\n Input file: ' + filename)
     plt.xlabel('PCA1')
     plt.ylabel('PCA2')
 
+    plt.savefig('PCA_' + filename + ".png")
     plt.show()
 
 def main():
