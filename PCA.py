@@ -25,8 +25,7 @@ def loadDataset(fileName):
     # print("Number of columns in file {} is : {}".format(fileName,numCols))
     # load data points
     raw_data = np.loadtxt(fileName, delimiter='\t', skiprows=0, usecols=range(0, numCols - 1))
-    # samples, features = np.shape(raw_data)
-    # data = np.mat(raw_data[:, :4])
+
     data = np.mat(raw_data)
 
     return data, labels
@@ -37,11 +36,11 @@ def PCA(data,num_components):
     covMat = np.cov(data.T)
     eigenVals, eigenVectors = eig(covMat)
 
+    #Get the top 'x' eigenVectors
     idx = np.argsort(eigenVals)
     idx = idx[:-(num_components+1):-1]
     eigenVectorsSorted = eigenVectors[:,idx]
-
-    # print("Shape data : {}, Shape eigenVectors: {}".format(np.shape(data),np.shape(eigenVectorsSorted)))
+    print(eigenVectorsSorted)
     finalData = data * eigenVectorsSorted
 
     return finalData
@@ -64,7 +63,7 @@ def plotGraph(filename, finalData,labels):
     plt.xlabel('PCA1')
     plt.ylabel('PCA2')
 
-    plt.savefig('PCA_' + filename + ".png")
+    plt.savefig('PCA_' + filename + ".png", dpi=300)
     plt.show()
 
 def main():

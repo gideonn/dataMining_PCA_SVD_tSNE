@@ -21,18 +21,17 @@ def loadDataset(fileName):
         print("Error opening the file")
         exit(-1)
 
-    # print("Number of columns in file {} is : {}".format(fileName,numCols))
     # load data points
     raw_data = np.loadtxt(fileName, delimiter='\t', skiprows=0, usecols=range(0, numCols - 1))
-    # samples, features = np.shape(raw_data)
-    # data = np.mat(raw_data[:, :4])
     data = np.mat(raw_data)
 
     return data, labels
 
 def tSNE(data, num_components):
-    newdata = TSNE(n_components=num_components, verbose=1).fit_transform(data)
-    print(np.shape(newdata))
+    # means_mat = np.mean(data, axis=0)
+    # data = data - means_mat
+    newdata = TSNE(n_components=num_components).fit_transform(data)
+    # print(np.shape(newdata))
 
     return newdata
 
@@ -49,8 +48,8 @@ def plotGraph(filename, finalData, labels):
     plt.xlabel('tSNE1')
     plt.ylabel('tSNE2')
 
-    plt.savefig('tSNE_' + filename + ".png")
 
+    plt.savefig('tSNE_' + filename + ".png", dpi=300)
     plt.show()
 
 def main():
@@ -63,7 +62,6 @@ def main():
         exit(-1)
 
     dataset, labels = loadDataset(filename)
-    numRows, numCols = np.shape(dataset)
     finalData = tSNE(dataset,2)
     plotGraph(filename,finalData, labels)
 

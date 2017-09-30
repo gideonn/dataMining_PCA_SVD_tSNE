@@ -22,44 +22,35 @@ def loadDataset(fileName):
         print("Error opening the file")
         exit(-1)
 
-    # print("Number of columns in file {} is : {}".format(fileName,numCols))
     # load data points
     raw_data = np.loadtxt(fileName, delimiter='\t', skiprows=0, usecols=range(0, numCols - 1))
-    # samples, features = np.shape(raw_data)
-    # data = np.mat(raw_data[:, :4])
+
     data = np.mat(raw_data)
 
     return data, labels
 
 
 def SVD(data,num_components):
-    # calculate SVD
+    # center the data
+    means_mat = np.mean(data, axis=0)
+    data = data - means_mat
+
+    # call the numpy's SVD function
     # U, s, V = linalg.svd(data)
-    # newdata = np.dot(U[:, 0:num_components], np.dot(np.diagflat(s[0:num_components]), V[0:num_components, :]))
     # newdata = U[:, :num_components]
-    # newdata = U[:, :num_components].dot(np.diag(s))
-    # newdata = np.dot(U[:, :num_components], np.dot(np.diag(s[:num_components]), V[:num_components, :]))
-    # print(newdata)
-    # print(np.shape(U[:, :num_components]))
-    # newdata=newdata[:,:2]
-    # print(np.shape(newdata))
 
+    #Using scikit learns' TruncatedSVD method
     svd = TruncatedSVD(n_components=num_components).fit_transform(data)
-
-    # svd.fit(data)
-    # newdata = svd.transform(data)
-    # # # print(data)
     newdata = svd
-    # print(np.shape(newdata[:,0]))
-    # # print(np.shape(newdata[:,0]))
+
     return newdata
 
 
 def plotGraph(filename, finalData, labels):
-    #TSVD
+    #Data frame for method: TSVD
     df = pd.DataFrame(dict(x=finalData[:,0], y=finalData[:,1], label=labels))
 
-    #NP SVD
+    #Data frame for method: NP SVD
     # df = pd.DataFrame(dict(x=np.asarray(finalData.T[0])[0], y=np.asarray(finalData.T[1])[0], label=labels))
 
     groups = df.groupby('label')
@@ -74,8 +65,9 @@ def plotGraph(filename, finalData, labels):
     plt.xlabel('SVD1')
     plt.ylabel('SVD2')
 
-    plt.savefig('SVD_' + filename + ".png")
+    plt.savefig('SVD_' + filename + ".png",  dpi=300)
     plt.show()
+
 
 def main():
     try:
@@ -88,10 +80,7 @@ def main():
 
     print("Running SVD for file: {}".format(filename))
     dataset, labels = loadDataset(filename)
-    numRows, numCols = np.shape(dataset)
     finalData = SVD(dataset,2)
-
-    # print("FINAL DATA : \n", finalData)
 
     plotGraph(filename,finalData,labels)
 
