@@ -32,8 +32,8 @@ def loadDataset(fileName):
 
 def SVD(data,num_components):
     # center the data
-    means_mat = np.mean(data, axis=0)
-    data = data - means_mat
+    # means_mat = np.mean(data, axis=0)
+    # data = data - means_mat
 
     # call the numpy's SVD function
     # U, s, V = linalg.svd(data)
