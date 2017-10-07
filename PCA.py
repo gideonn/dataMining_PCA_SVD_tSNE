@@ -40,7 +40,7 @@ def PCA(data,num_components):
     idx = np.argsort(eigenVals)
     idx = idx[:-(num_components+1):-1]
     eigenVectorsSorted = eigenVectors[:,idx]
-    print(eigenVectorsSorted)
+    # print(eigenVectorsSorted)
     finalData = data * eigenVectorsSorted
 
     return finalData
